@@ -12,3 +12,4 @@ function repeater(string, n){
   let range = [...Array(n)].forEach(() => newString += string)
   return newString
 }
+// Note that there's a built in for this one. One liner is return string.repeat(n)
