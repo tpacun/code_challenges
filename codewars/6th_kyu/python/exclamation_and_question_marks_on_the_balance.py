@@ -22,3 +22,10 @@ def balance(left, right):
             elif char == '?':
                 weights[balance_side] +=3
     return 'Balance' if weights[left] == weights[right] else 'Left' if weights[left] > weights[right] else 'Right'
+
+# Refactor/Retry 04/11/22:
+
+def balance(left, right):
+    count_left = (left.count('!') * 2) + (left.count('?') * 3)
+    count_right = (right.count('!') * 2) + (right.count('?') * 3)
+    return 'Left' if count_left > count_right else 'Balance' if count_left == count_right else 'Right'
