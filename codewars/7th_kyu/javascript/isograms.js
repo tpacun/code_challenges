@@ -21,3 +21,9 @@ function isIsogram(str){
     }
     return true
   }
+
+// Refactor v2
+
+function isIsogram(str){
+    return str.length === [...new Set(str.toLowerCase().split(''))].length
+    }
