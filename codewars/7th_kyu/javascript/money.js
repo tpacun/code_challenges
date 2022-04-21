@@ -23,3 +23,14 @@ function calculateYears(principal, interest, tax, desired) {
     }
     return y
   }
+
+  // Refactor v2
+
+  function calculateYears(principal, interest, tax, desired) {
+    let y = 0;
+    while (desired > principal) {
+      principal = principal * (1 + interest) - principal * interest * tax
+      y ++
+    }
+    return y
+  }
