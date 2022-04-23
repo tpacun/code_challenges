@@ -3,6 +3,7 @@
 I try and complete at least one coding problem a day from websites such as CodeWars, Leet Code, and others.
 
 **CodeWars Profile:** https://www.codewars.com/users/theo.pacun
+
 ![CodeWars profile badge](https://www.codewars.com/users/theo.pacun/badges/large)
 
 ## How It's Made:
