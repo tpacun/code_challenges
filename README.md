@@ -6,6 +6,8 @@ I try and complete at least one coding problem a day from websites such as CodeW
 
 ![CodeWars profile badge](https://www.codewars.com/users/theo.pacun/badges/large)
 
+**LeetCode Profile:** https://leetcode.com/tpacun/
+
 ## How It's Made:
 
 **Tech used:** Python, JavaScript (so far...)
@@ -14,7 +16,7 @@ Though these problems often aren't representative of the actual work of developi
 
 ## Optimizations
 
-After solving a problem, I'll always browse the other solutions that have been submitted. If I notice something an interesting alternative answer that approaches the problem in a different way, I'll open an issue on that solution so I can come back, review the problem, and try solving in a more efficient or logical manner.
+After solving a problem, I'll always browse the other solutions that have been submitted. If I notice an interesting alternative answer that approaches the problem in a different way, I'll open an issue on that solution so I can come back, review the problem, and try solving in a more efficient or logical manner.
 
 **Issues page:** https://github.com/tpacun/code_challenges/issues
 
