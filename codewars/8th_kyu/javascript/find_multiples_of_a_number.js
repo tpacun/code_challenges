@@ -16,4 +16,8 @@ function findMultiples(integer, limit) {
     return newArray
   }
 
-  
+  // One-liner/Refactor:
+
+  function findMultiples(integer, limit) {
+    return Array(Math.floor(limit/integer)).fill(1).map((c, i) => (i + 1) * integer)
+  }
