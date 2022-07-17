@@ -22,4 +22,4 @@ After solving a problem, I'll always browse the other solutions that have been s
 
 ## Lessons Learned:
 
-Being an engineer means continuously learning! These types of problems are often maligned but I actually really enjoy them and getting to see the growth as I try to complete more and more difficult problems is awesome.
+Being an engineer means continuously learning! These types of problems are often maligned but I actually really enjoy them. Getting to see the growth as I try to complete more and more difficult problems is awesome.
