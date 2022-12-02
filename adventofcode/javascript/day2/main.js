@@ -34,8 +34,6 @@ const arrayChoices = arrayRounds.map((str) => {return str.split(' ')})
 let sums = 0
 
 function pointGetter(arr) {
-    let total = 0
-
     // Points for choice
     // total += arr[1] === 'X' ? 1:arr[1] === 'Y' ? 2:3
 
@@ -56,9 +54,7 @@ function pointGetter(arr) {
             'C': 6
         }
     }
-
-    total += results[arr[1]][arr[0]]
-    return total
+    return results[arr[1]][arr[0]]
 }
 
 arrayChoices.forEach((arr) => {
@@ -66,4 +62,49 @@ arrayChoices.forEach((arr) => {
     sums += pointPerRound
 })
 
-console.log(sums)
+console.log(`Part 1: ${sums}`)
+
+// "Anyway, the second column says how the round needs to end: X means you need to lose, Y means you need to end the round in a draw, and Z means you need to win. Good luck!"
+
+// The total score is still calculated in the same way, but now you need to figure out what shape to choose so the round ends as indicated. The example above now goes like this:
+
+// In the first round, your opponent will choose Rock (A), and you need the round to end in a draw (Y), so you also choose Rock. This gives you a score of 1 + 3 = 4.
+// In the second round, your opponent will choose Paper (B), and you choose Rock so you lose (X) with a score of 1 + 0 = 1.
+// In the third round, you will defeat your opponent's Scissors with Rock for a score of 1 + 6 = 7.
+// Now that you're correctly decrypting the ultra top secret strategy guide, you would get a total score of 12.
+
+function choicePointGetter (arr) {
+    points = {
+        // X, 0 points
+        // Y, 3 points
+        // Z, 6 points
+        // Rock: A, 1pt
+        // Paper: B, 2pt
+        // Scissors: C, 3pt
+
+        'X': {
+            'A': 3,
+            'B': 1,
+            'C': 2
+        },
+        'Y': {
+            'A': 4,
+            'B': 5,
+            'C': 6
+        },
+        'Z': {
+            'A': 8,
+            'B': 9,
+            'C': 7
+        }
+    }
+    return points[arr[1]][arr[0]]
+}
+
+let sumsPartTwo = 0
+arrayChoices.forEach((arr) => {
+    const pointPerRound = choicePointGetter(arr)
+    sumsPartTwo += pointPerRound
+})
+
+console.log(`Part 2: ${sumsPartTwo}`)
