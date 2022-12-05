@@ -42,40 +42,39 @@
 // Part One: After the rearrangement procedure completes, what crate ends up on top of each stack?
 
 const fs = require('fs')
-const { machine } = require('os')
-const { start } = require('repl')
 
 const inputText = fs.readFileSync('input.txt').toString()
 const position = inputText.split('\r\n\r\n')[0].split('\r\n')
 
 const charPositions = Array.from({length: position[0].length / 4 + 1}, (_, i) => 1 + i * 4)
 
-let startingPosition = {}
+let startingPosition = []
 
 charPositions.forEach((num, i) => {
-    startingPosition[position[position.length -1].charAt(num)] = [...new Array(position.length - 1)]
+    startingPosition.push([...new Array(position.length - 1)]
         .map((_, i) => position[i].charAt(num))
-        .filter((c) => c !== ' ')
-})
+        .filter((c) => c !== ' '))})
+
+console.log(startingPosition)
+
+let rearrangementPartOne = JSON.parse(JSON.stringify(startingPosition))
 
 const instructions = inputText.split('\r\n\r\n')[1]
 
 const machineInstructions = instructions.split('\r\n').map((str) => {
     const instructionsSplit = str.split(' ')
-    return {"reps": +instructionsSplit[1],
-    "from": instructionsSplit[3], 
-    "to": instructionsSplit[5]}
+    return [+instructionsSplit[1], +instructionsSplit[3] - 1 , +instructionsSplit[5] - 1]
 })
 
 machineInstructions.forEach((instruction) => {
-    let fromStack = startingPosition[instruction["from"]]
-    let moving = fromStack.splice(0, instruction["reps"]).reverse()
-    let to = startingPosition[instruction["to"]]
-    startingPosition[instruction["to"]] = moving.concat(to)
+    let fromStack = rearrangementPartOne[instruction[1]]
+    let moving = fromStack.splice(0, instruction[0]).reverse()
+    let to = rearrangementPartOne[instruction[2]]
+    rearrangementPartOne[instruction[2]] = moving.concat(to)
 })
 
 let answerPOne = ''
-for (key in startingPosition) {answer = answer.concat(startingPosition[key][0])}
+for (key in rearrangementPartOne) {answerPOne = answerPOne.concat(rearrangementPartOne[key][0])}
 console.log(`Part One ${answerPOne}`)
 
 // Part Two:
@@ -95,3 +94,17 @@ console.log(`Part One ${answerPOne}`)
 // [Z] [M] [P]
 // 1   2   3 
 // However, the action of moving three crates from stack 1 to stack 3 means that those three moved crates stay in the same order, resulting in this new configuration:
+
+let rearrangementPartTwo = JSON.parse(JSON.stringify(startingPosition))
+console.log(rearrangementPartTwo)
+machineInstructions.forEach((instruction) => {
+    let fromStack = rearrangementPartTwo[instruction[1]]
+    let moving = fromStack.splice(0, instruction[0]) // .reverse()
+    let to = rearrangementPartTwo[instruction[2]]
+    rearrangementPartTwo[instruction[2]] = moving.concat(to)
+})
+
+
+let answerPTwo = ''
+for (key in rearrangementPartTwo) {answerPTwo = answerPTwo.concat(rearrangementPartTwo[key][0] ? rearrangementPartTwo[key][0]:' ')}
+console.log(`Part Two ${answerPTwo}`)
