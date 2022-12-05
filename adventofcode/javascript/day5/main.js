@@ -99,7 +99,7 @@ let rearrangementPartTwo = JSON.parse(JSON.stringify(startingPosition))
 console.log(rearrangementPartTwo)
 machineInstructions.forEach((instruction) => {
     let fromStack = rearrangementPartTwo[instruction[1]]
-    let moving = fromStack.splice(0, instruction[0]) // .reverse()
+    let moving = fromStack.splice(0, instruction[0]) // .reverse() <== removal of this is only change required
     let to = rearrangementPartTwo[instruction[2]]
     rearrangementPartTwo[instruction[2]] = moving.concat(to)
 })
