@@ -50,88 +50,9 @@
 // Find all of the directories with a total size of at most 100000. What is the sum of the total sizes of those directories?
 
 const path = require('path')
-const { daySevenFunctions} = require('./main')
+const { daySevenFunctions, File, Traverser } = require('./main')
 const testFilepath = path.resolve(__dirname, 'testInput.txt')
 
-describe('File class', () => {
-
-    let home = new File('/', 'dir')
-
-    test('createChildFile creates new child File in children property', () => {
-        home.createChildFile('abc', 'dir', 0)
-        expect(home.children.abc).toBeTruthy()
-        expect(home.children.abc.parent).toBe(home.name)
-    })
-})
-
-describe('Traverser class', () => {
-
-    describe('Traverser changeDir', () => {
-
-        let traverser = new Traverser('/')
-        traverser.files.createChildFile('abc', 'dir')
-
-        test('traverser creates correct working directory name', () => {
-            expect(traverser.workingDir['name']).toEqual('/')
-        })
-
-        test('traverser changes to new directories correctly', () => {
-            traverser.changeDir('abc')
-            expect(traverser.workingDir['name']).toEqual('abc')
-        })
-
-        test('traverser makes a new child file in second level directory', () => {
-            traverser.changeDir('123')
-            expect(traverser.workingDir['name']).toEqual('123')
-        })
-
-        test('traverser moves up directory level correctly', () => {
-            traverser.changeDir('..')
-            expect(traverser.workingDir).toEqual('abc')
-        })
-    })
-
-    // describe('traverser get working directory', () => {
-    //     let traverser = new Traverser('/')
-    //     traverser.changeDir('abc')
-        
-    //     expect(traverser.getWorkingDir()).toEqual()
-
-    // })
-
-    describe('Traverser executeInstruction', () => {
-        let traverser = new Traverser('/')
-        traverser.files.createChildFile('abc', 'dir')
-
-        test('executes an ls', () => {
-            traverser.executeInstruction({
-                command: 'ls',
-                responses: [['dir', 'dirname'], ['13242', 'filename.asdf']]
-            })
-
-            expect(traverser.files.children['dir']).toBeTruthy()
-            expect(traverser.files.children['dir'].size).toBe
-            expect(traverser.files.children['filename.asdf']).toBeTruthy()
-            expect(traverser.files.children['filename.asdf'].size).toBe(13242)
-
-        })
-
-        test('executes a cd', () => {
-            traverser.executeInstruction({
-                command: 'cd def',
-                responses: undefined
-            })
-            expect(traverser.workingDir).toEqual(['/', 'def'])
-            expect(traverser.files.children['def']).toBeTruthy()
-
-        })
-
-        test('Does not execute garbled command', () => {
-
-        })
-
-    })
-})
 
 test('importText returns a string', () => {
     let result = daySevenFunctions.importText(testFilepath)
@@ -161,4 +82,124 @@ describe("Text parsing", () => {
             expect(element).toHaveProperty('responses')
         })
     })
+})
+
+describe('File tests', () => {
+
+})
+
+describe('Traverser tests', () => {
+
+    test('Traverser instantiates with undefined values', () => {
+
+        let traverser = new Traverser
+        expect(traverser.workingDir).not.toBeTruthy()
+        expect(traverser.files).not.toBeTruthy()        
+    })
+
+    describe('createFile', () => {
+
+        let traverser = new Traverser
+        traverser.createFile('/', 'dir', 0)
+        traverser.createFile('abc.log', 'file', 1234)
+
+        test('Traverser creates a new root file and sets workingDir if files property is undefined', () => {
+            
+            expect(traverser.files).toBeInstanceOf(File)
+            expect(traverser.workingDir.name).toEqual('/')
+
+        })
+    
+        test('Traverser creates file as a child if files property is defined but does not change workingDir', () => {
+
+            expect(traverser.files.children['abc.log']).toBeInstanceOf(File)
+            expect(traverser.workingDir.children['abc.log']).toBeInstanceOf(File)
+            expect(traverser.workingDir.name).toEqual('/')
+        })
+
+        test('createFile sets filepath of new file properly', () => {
+
+            expect(traverser.files.children['abc.log'].filepath).toEqual(['/', '/'])
+        })
+
+    })
+
+    describe('changeDir', () => {
+
+        test('changeDir navigates into children files, sets workingDir properly, and creates a file in the proper folder', () => {
+            let traverser = new Traverser
+            traverser.createFile('/', 'dir', 0)
+            traverser.createFile('abc', 'dir', 0)
+            traverser.changeDir('abc')
+            traverser.createFile('123', 'dir', 0)
+
+            expect(traverser.workingDir.name).toEqual('abc')
+            expect(traverser.workingDir.children['123']).toBeTruthy()
+            expect(traverser.files.children['abc'].children['123']).toBeTruthy()
+        })
+
+        test('changeDir navigates up one level properly and sets workingDir properly', () => {
+            let traverser = new Traverser
+            traverser.createFile('/', 'dir', 0)
+            traverser.createFile('abc', 'dir', 0)
+            traverser.changeDir('abc')
+            traverser.changeDir('..')
+            expect(traverser.workingDir.name).toEqual('/')
+        })
+
+    })
+
+    describe('acceptInstruction', () => {
+
+  
+
+        test('if instruction is cd, Traverser moves down to proper directory', () => {
+            let traverser = new Traverser
+            traverser.createFile('/', 'dir', 0)
+            traverser.createFile('abc', 'dir', 0)
+            traverser.createFile('123', 'dir', 0)
+            traverser.createFile('pie', 'dir', 0)
+            traverser.changeDir('abc')
+            traverser.createFile('foo', 'dir', 0)
+            traverser.createFile('bar', 'dir', 0)
+            traverser.createFile('fubar', 'dir', 0)
+
+            traverser.acceptInstruction({
+                command: ['cd', 'foo'],
+                instructions: undefined
+            })
+            expect(traverser.workingDir.name).toEqual('foo')
+        })
+        test('if instruction is cd, Traverser moves up to proper directory', () => {
+
+            let traverser = new Traverser
+            traverser.createFile('/', 'dir', 0)
+            traverser.createFile('abc', 'dir', 0)
+            traverser.createFile('123', 'dir', 0)
+            traverser.createFile('pie', 'dir', 0)
+            traverser.changeDir('abc')
+            traverser.createFile('foo', 'dir', 0)
+            traverser.createFile('bar', 'dir', 0)
+            traverser.createFile('fubar', 'dir', 0)   
+
+            traverser.changeDir('foo')
+            console.log(traverser.workingDir.filepath)
+            traverser.acceptInstruction({
+                command: ['cd', '..'],
+                instructions: undefined
+            })
+            expect(traverser.workingDir.name).toEqual('abc')
+        })
+
+        test('if instruction is ls, acceptInstruction looks for child files and creates them if not existent', () => {
+
+        })
+
+
+    })
+
+    
+
+
+
 })

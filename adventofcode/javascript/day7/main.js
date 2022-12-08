@@ -1,66 +1,5 @@
 const fs = require('fs')
 
-class File {
-    constructor(name, filetype, size = 0, parent) {
-        this.name = name;
-        this.filetype = filetype;
-        this.size = size;
-        this.parent = parent
-        this.children = {}
-        }
-
-    createChildFile(name, filetype, size) {
-        this.children[name] = new File(name, filetype, size, this.name)
-    }
-}
-
-class Traverser {
-    constructor(fileStructName) {
-        this.files = new File(fileStructName, 'dir', 0, undefined)
-        this.workingDir = this.files
-    }
-
-    changeDir(newDir) {
-        if (newDir === '..') {
-            this.workingDir = this.
-        } else {
-            if (!this.files.children[newDir]) {
-                this.workingDir.createChildFile(newDir, 'dir', 0)
-            }
-            this.workingDir = this.workingDir.children[newDir]
-        }
-    }
-
-    // getWorkingDir() {
-    //     let workingDir = 
-    //     this.workingDir.((loc) => {
-
-    //     })
-    //     return workingDir
-    // }
-
-    executeInstruction(instruction) {
-        let instructionParsed = instruction.command.split(' ')
-        if (instructionParsed[0] === 'cd') {
-            this.changeDir(instructionParsed[1])
-        } else if (instructionParsed[0] === 'ls') {
-            let responses = instruction.responses
-            responses.forEach((array) => {
-                if (responses[0] === 'dir') {
-                    this.createChildFile(responses[1], 'dir', 0)
-                } else {
-                    this.createChildFile(responses[1], 'file', +responses[0])
-                }
-            })
-        }
-        
-    }
-
-    getTotalSize(pathname) {
-
-    }
-}
-
 const daySevenFunctions = {
     importText: function(filepath) {
         const inputText = fs.readFileSync(filepath).toString()
@@ -80,4 +19,58 @@ const daySevenFunctions = {
     }
 }
 
-module.exports = { daySevenFunctions}
+class File {
+    constructor(name, type, size, filepath) {
+        this.name = name
+        this.type = type
+        this.size = size
+        this.filepath = filepath
+        this.children = {}
+
+    }
+}
+
+class Traverser {
+    constructor() {
+        this.workingDir = undefined;
+        this.files = undefined;
+    }
+
+    createFile(name, type, size) {
+        if (!this.files) {
+            this.files = new File(name, type, size, [`${name}`])
+            this.workingDir = this.files
+        } else {
+            this.workingDir.children[name] = new File(name, type, size, this.workingDir.filepath.concat([this.workingDir.name]))
+        }
+    }
+
+    changeDir(filepath) {
+        if (filepath === '..') {
+            let filepathUpOneLevel = this.workingDir.filepath.slice(1)
+            console.log(filepathUpOneLevel)
+            this.workingDir = this.files
+            console.log(this.workingDir)
+            filepathUpOneLevel.forEach((loc) => {
+                if (loc !== '/') {
+                    this.workingDir = this.workingDir.children[loc]
+                }
+            })
+        } else {
+            this.workingDir = this.workingDir.children[filepath]
+        }
+    }
+
+    acceptInstruction(instruction) {
+        if (instruction.command[0] !== 'cd') {
+            // ls
+        } else {
+            // cd
+            this.changeDir(instruction.command[1])
+        }
+
+    }
+
+}
+
+module.exports = { daySevenFunctions, File, Traverser }
